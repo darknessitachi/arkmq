@@ -32,7 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-public class Server {
+public class ServerUI {
 
 	private JFrame frame;
 	private JTextArea contentArea;
@@ -56,10 +56,7 @@ public class Server {
 
 	private boolean isStart = false;
 
-	// 主方法,程序执行入口
-	public static void main(String[] args) {
-		new Server();
-	}
+	
 
 	// 执行消息发送
 	public void send() {
@@ -85,7 +82,7 @@ public class Server {
 	}
 
 	// 构造放法
-	public Server() {
+	public ServerUI() {
 		frame = new JFrame("服务器");
 		// 更改JFrame的图标：
 		//frame.setIconImage(Toolkit.getDefaultToolkit().createImage(Client.class.getResource("qq.png")));

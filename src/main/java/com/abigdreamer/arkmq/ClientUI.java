@@ -30,7 +30,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-public class Client{
+public class ClientUI{
 
 	private JFrame frame;
 	private JList userList;
@@ -59,7 +59,7 @@ public class Client{
 
 	// 主方法,程序入口
 	public static void main(String[] args) {
-		new Client();
+		new ClientUI();
 	}
 
 	// 执行发送
@@ -80,7 +80,7 @@ public class Client{
 	}
 
 	// 构造方法
-	public Client() {
+	public ClientUI() {
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		textArea.setForeground(Color.blue);
