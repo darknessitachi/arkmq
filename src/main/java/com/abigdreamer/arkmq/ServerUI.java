@@ -207,9 +207,13 @@ public class ServerUI {
 
 	ArkServer arkServer;
 	
+	public void init() {
+		arkServer = new ArkServer(this);
+	}
+	
 	// 启动服务器
 	public void serverStart(int max, int port) throws java.net.BindException {
-		arkServer = new ArkServer(this);
+		
 		arkServer.start(max, port);
 	}
 

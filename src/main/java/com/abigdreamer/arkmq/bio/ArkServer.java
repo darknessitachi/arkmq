@@ -74,7 +74,7 @@ public class ArkServer {
 					socket.close();
 					continue;
 				}
-				ClientThread client = new ClientThread(socket);
+				ClientThread client = new ClientThread(this, this.serverUI, socket);
 				client.start();// 开启对此客户端服务的线程
 				this.clients.add(client);
 				

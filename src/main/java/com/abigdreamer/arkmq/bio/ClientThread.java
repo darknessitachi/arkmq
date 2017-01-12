@@ -20,25 +20,11 @@ public class ClientThread extends Thread {
 	ServerUI serverUI;
 	ArkServer arkServer;
 	
-	public ClientThread(ArkServer arkServer, ServerUI serverUI) {
+	// 客户端线程的构造方法
+	public ClientThread(ArkServer arkServer, ServerUI serverUI, Socket socket) {
 		this.arkServer = arkServer;
 		this.serverUI = serverUI;
-	}
-
-	public BufferedReader getReader() {
-		return reader;
-	}
-
-	public PrintWriter getWriter() {
-		return writer;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	// 客户端线程的构造方法
-	public ClientThread(Socket socket) {
+		
 		try {
 			this.socket = socket;
 			reader = new BufferedReader(new InputStreamReader(socket
@@ -71,6 +57,18 @@ public class ClientThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public BufferedReader getReader() {
+		return reader;
+	}
+
+	public PrintWriter getWriter() {
+		return writer;
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	@SuppressWarnings("deprecation")
