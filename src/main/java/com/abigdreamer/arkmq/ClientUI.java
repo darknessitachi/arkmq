@@ -55,12 +55,7 @@ public class ClientUI{
 	private PrintWriter writer;
 	private BufferedReader reader;
 	private MessageThread messageThread;// 负责接收消息的线程
-	private Map<String, User> onLineUsers = new HashMap<String, User>();// 所有在线用户
-
-	// 主方法,程序入口
-	public static void main(String[] args) {
-		new ClientUI();
-	}
+	private Map<String, User> onLineUsers = new HashMap<>();// 所有在线用户
 
 	// 执行发送
 	public void send() {

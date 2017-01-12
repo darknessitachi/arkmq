@@ -7,15 +7,23 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
+import com.abigdreamer.arkmq.ServerUI;
 import com.abigdreamer.arkmq.User;
 
 //为一个客户端服务的线程
-public 
-class ClientThread extends Thread {
-	private Socket socket;
-	private BufferedReader reader;
-	private PrintWriter writer;
-	private User user;
+public class ClientThread extends Thread {
+	public Socket socket;
+	public BufferedReader reader;
+	public PrintWriter writer;
+	public User user;
+	
+	ServerUI serverUI;
+	ArkServer arkServer;
+	
+	public ClientThread(ArkServer arkServer, ServerUI serverUI) {
+		this.arkServer = arkServer;
+		this.serverUI = serverUI;
+	}
 
 	public BufferedReader getReader() {
 		return reader;
@@ -44,21 +52,21 @@ class ClientThread extends Thread {
 			writer.println(user.getName() + user.getIp() + "与服务器连接成功!");
 			writer.flush();
 			// 反馈当前在线用户信息
-			if (clients.size() > 0) {
+			if (this.arkServer.clients.size() > 0) {
 				String temp = "";
-				for (int i = clients.size() - 1; i >= 0; i--) {
-					temp += (clients.get(i).getUser().getName() + "/" + clients
+				for (int i = this.arkServer.clients.size() - 1; i >= 0; i--) {
+					temp += (this.arkServer.clients.get(i).getUser().getName() + "/" + this.arkServer.clients
 							.get(i).getUser().getIp())
 							+ "@";
 				}
-				writer.println("USERLIST@" + clients.size() + "@" + temp);
+				writer.println("USERLIST@" + this.arkServer.clients.size() + "@" + temp);
 				writer.flush();
 			}
 			// 向所有在线用户发送该用户上线命令
-			for (int i = clients.size() - 1; i >= 0; i--) {
-				clients.get(i).getWriter().println(
+			for (int i = this.arkServer.clients.size() - 1; i >= 0; i--) {
+				this.arkServer.clients.get(i).getWriter().println(
 						"ADD@" + user.getName() + user.getIp());
-				clients.get(i).getWriter().flush();
+				this.arkServer.clients.get(i).getWriter().flush();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -73,7 +81,7 @@ class ClientThread extends Thread {
 				message = reader.readLine();// 接收客户端消息
 				if (message.equals("CLOSE"))// 下线命令
 				{
-					contentArea.append(this.getUser().getName()
+					this.serverUI.contentArea.append(this.getUser().getName()
 							+ this.getUser().getIp() + "下线!\r\n");
 					// 断开连接释放资源
 					reader.close();
@@ -81,19 +89,19 @@ class ClientThread extends Thread {
 					socket.close();
 
 					// 向所有在线用户发送该用户的下线命令
-					for (int i = clients.size() - 1; i >= 0; i--) {
-						clients.get(i).getWriter().println(
+					for (int i = this.arkServer.clients.size() - 1; i >= 0; i--) {
+						this.arkServer.clients.get(i).getWriter().println(
 								"DELETE@" + user.getName());
-						clients.get(i).getWriter().flush();
+						this.arkServer.clients.get(i).getWriter().flush();
 					}
 
-					listModel.removeElement(user.getName());// 更新在线列表
+					this.serverUI.listModel.removeElement(user.getName());// 更新在线列表
 
 					// 删除此条客户端服务线程
-					for (int i = clients.size() - 1; i >= 0; i--) {
-						if (clients.get(i).getUser() == user) {
-							ClientThread temp = clients.get(i);
-							clients.remove(i);// 删除此用户的服务线程
+					for (int i = this.arkServer.clients.size() - 1; i >= 0; i--) {
+						if (this.arkServer.clients.get(i).getUser() == user) {
+							ClientThread temp = this.arkServer.clients.get(i);
+							this.arkServer.clients.remove(i);// 删除此用户的服务线程
 							temp.stop();// 停止这条服务线程
 							return;
 						}
@@ -114,11 +122,11 @@ class ClientThread extends Thread {
 		String owner = stringTokenizer.nextToken();
 		String content = stringTokenizer.nextToken();
 		message = source + "说：" + content;
-		contentArea.append(message + "\r\n");
+		this.serverUI.contentArea.append(message + "\r\n");
 		if (owner.equals("ALL")) {// 群发
-			for (int i = clients.size() - 1; i >= 0; i--) {
-				clients.get(i).getWriter().println(message + "(多人发送)");
-				clients.get(i).getWriter().flush();
+			for (int i = this.arkServer.clients.size() - 1; i >= 0; i--) {
+				this.arkServer.clients.get(i).getWriter().println(message + "(多人发送)");
+				this.arkServer.clients.get(i).getWriter().flush();
 			}
 		}
 	}
